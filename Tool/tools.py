@@ -59,5 +59,15 @@ def execute_shell_command(shell_command:Annotated[str,"The shell command to exec
 def ask_question_to_user(question:Annotated[str,"The question to ask the user"]):
     """Ask a question to the user and return the answer"""
     return input(f"Agent is asking: {question}, please type your feedback" )
+
+@tool
+def create_file():
+    filename = input("Enter the filename: ")
+    try:
+        with open(filename, 'w') as file:
+            file.write("")  # Optionally write initial content
+        print(f"File '{filename}' created successfully!")
+    except Exception as e:
+        print(f"Error creating file '{filename}': {e}")
     
 
