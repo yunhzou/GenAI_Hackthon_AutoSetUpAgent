@@ -6,7 +6,7 @@ import sys
 class InteractiveShell:
     def __init__(self):
         # Start a clean bash shell without user config files, disabling echo
-        self.shell = pexpect.spawn('/bin/bash', encoding='utf-8', timeout=30, echo=False)
+        self.shell = pexpect.spawn('/bin/bash', encoding='utf-8', timeout=7200, echo=False)
 
         # Send output to stdout for visual feedback
         self.shell.logfile_read = sys.stdout
