@@ -61,13 +61,9 @@ def ask_question_to_user(question:Annotated[str,"The question to ask the user"])
     return input(f"Agent is asking: {question}, please type your feedback" )
 
 @tool
-def create_file():
-    filename = input("Enter the filename: ")
-    try:
-        with open(filename, 'w') as file:
-            file.write("")  # Optionally write initial content
-        print(f"File '{filename}' created successfully!")
-    except Exception as e:
-        print(f"Error creating file '{filename}': {e}")
-    
+def create_file(filename:Annotated[str,"The name of the file to create"],content:Annotated[str,"The content of the file"]):
+    """Create a file with the given content"""
+    with open(filename,"w") as f:
+        f.write(content)
+    return f"File {filename} created"    
 
