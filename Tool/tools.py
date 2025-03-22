@@ -3,6 +3,8 @@ from typing import Annotated
 import requests
 from .python_repl import PythonREPL
 import os
+import subprocess
+
 local_working_directory = os.getenv("LOCAL_WORKING_DIRECTORY")
 
 @tool
@@ -28,7 +30,7 @@ def read_webpage(url: str) -> str:
 python_repl = PythonREPL(working_dir=local_working_directory)
 
 @tool
-def repl_tool(code:str):
+def repl_tool(code:Annotated[str, "The Python Script to run"]):
     """
     Run Python code in a REPL environment. To see the result, you must include the print statement in the code. If no print statement, you will not see the execution result and an empty string will be returned. Python repl cannot be used to call other tools or actions you have.
 
@@ -42,3 +44,9 @@ def repl_tool(code:str):
         return "ERROR, YOU ARE HALLUCINATING. You cannot call other tools or actions in the Python REPL."
     return python_repl.run(code)
 
+
+@tool
+def run_shell(command:Annotated[str,"The shell command to run"]):
+    """This Tool Executes a shell command and returns the output."""
+    result = subprocess.run(command, shell=True, capture_output=True, text=True)
+    return result.stdout.strip(), result.stderr.strip(), result.returncode
