@@ -4,6 +4,7 @@ import requests
 from .python_repl import PythonREPL
 import os
 import subprocess
+from .pexpect_interactive_shell import InteractiveShell
 
 local_working_directory = os.getenv("LOCAL_WORKING_DIRECTORY")
 
@@ -45,8 +46,18 @@ def repl_tool(code:Annotated[str, "The Python Script to run"]):
     return python_repl.run(code)
 
 
+
+shell = InteractiveShell()
+
 @tool
-def run_shell(command:Annotated[str,"The shell command to run"]):
-    """This Tool Executes a shell command and returns the output."""
-    result = subprocess.run(command, shell=True, capture_output=True, text=True)
-    return result.stdout.strip(), result.stderr.strip(), result.returncode
+def execute_shell_command(shell_command:Annotated[str,"The shell command to execute"]):
+    """Execute a shell command and return the output, the shell is preserved by session, thus it is fine to cd first and then ls."""
+    output = shell.execute(shell_command)
+    return output
+
+@tool 
+def ask_question_to_user(question:Annotated[str,"The question to ask the user"]):
+    """Ask a question to the user and return the answer"""
+    return input(f"Agent is asking: {question}, please type your feedback" )
+    
+
