@@ -43,7 +43,7 @@ class EvoForge:
 #TODO: teaching and expert currently are not in use
     def spawn_teaching_material_agent(self,session:str,model:str="claude-3-7-sonnet-20250219"):
         """Spawn an agent in the given session"""
-        teaching_material_tools = [read_webpage,execute_shell_command,ask_question_to_user,create_file]
+        teaching_material_tools = []
         teaching_material_agent = LangGraphAgent(model=model,session_id=session)
         teaching_material_agent.rewrite_system_message(TEACHING_AGENT_SYSTEM_MESSAGE)
         teaching_material_agent.add_tool(teaching_material_tools)
@@ -51,7 +51,7 @@ class EvoForge:
     
     def spawn_expert_agent(self,session:str,model:str="claude-3-7-sonnet-20250219"):
         """Spawn an agent in the given session"""
-        expert_tools = [read_webpage,execute_shell_command,ask_question_to_user,create_file]
+        expert_tools = []
         expert_agent = LangGraphAgent(model=model,session_id=session)
         expert_agent.rewrite_system_message(EXPERT_SYSTEM_MESSAGE)
         expert_agent.add_tool(expert_tools)
