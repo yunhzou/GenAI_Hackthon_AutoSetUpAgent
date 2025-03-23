@@ -14,6 +14,7 @@ from .agent_utils import image_to_base64, get_date, content_read_out
 import copy
 from operator import add
 from EvoForge.config import nosql_service
+from datetime import datetime
 
 
 
@@ -223,6 +224,9 @@ class LangGraphSupporter(ABC):
 
     def invoke(self,user_input,image_urls:Optional[List[str]]=None)->List[BaseMessage]:
         """image_urls: list of image urls, can be local dir"""
+        collection = self.memory_manager.user_chat
+        current_timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")
+        collection.insert_one({"thread_id":f"{self.session_id}","query":user_input,"timestamp":current_timestamp,"agent":self.agent_name} )
         user_input,user_input_clean = self._structure_user_input(user_input,image_urls)
         if user_input is None:
             self.change_continue_from_error(True)
