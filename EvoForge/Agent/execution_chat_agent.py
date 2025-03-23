@@ -142,6 +142,19 @@ class LangGraphAgent(LangGraphSupporter):
         progress = parsed_response["progress_percentage"]
         self.formatted_history_record["progress"] = progress
         print("The current progress is ",progress)
+        self.memory_manager.agent_chat.update_one(
+            {
+                "thread_id": self.session_id,
+                "timestamp": self.current_time
+            },
+            {
+                "$set": {
+                    "formatted_history": self.formatted_history_record,
+                    "agent": self.agent_name
+                }
+            },
+            upsert=True
+        )
         return {"progress":progress}    
     
     def sync_state(self, state:AgentState):
@@ -157,6 +170,7 @@ class LangGraphAgent(LangGraphSupporter):
         return {"target_task":target_task,"progress":0}
 
     def call_model(self,state: AgentState):
+        self.current_time = datetime.utcnow()
         self.formatted_history_record = {}
         message_history = self.get_message_history(state)
         try:
@@ -206,11 +220,18 @@ class LangGraphAgent(LangGraphSupporter):
 
         print(self.session_id)
         print(self.agent_name)
-        self.memory_manager.agent_chat.insert_one({
-                    "thread_id": self.session_id,
+        self.memory_manager.agent_chat.update_one(
+            {
+                "thread_id": self.session_id,
+                "timestamp": self.current_time
+            },
+            {
+                "$set": {
                     "formatted_history": self.formatted_history_record,
-                    "agent": self.agent_name,
-                    "timestamp": datetime.utcnow()  # Add the current UTC timestamp
-                })
+                    "agent": self.agent_name
+                }
+            },
+            upsert=True
+        )
         return {"messages": [response],"messages_clean": [response],"session_id":self.session_id,"memory_db_name":self.memory_db_name}
     

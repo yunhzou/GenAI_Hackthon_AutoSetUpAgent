@@ -12,7 +12,7 @@ class InteractiveShell:
         self.prompt = r'PROMPT\$ '
         # Set root directory if provided
         if root_dir:
-            self.execute(f'cd {root_dir}')
+            self.execute(f'cd "{root_dir}"')
 
     def execute(self, command):
         if "create" in command:
