@@ -44,6 +44,9 @@ def create_create_file_tool(working_directory:str):
     @tool
     def create_file(filename:Annotated[str,"The name of the file to create"],content:Annotated[str,"The content of the file"]):
         """Create a file with the given content"""
+        if "python" in content:
+            if "input(" in content:
+                return "❌ The content contains an input() function, which is not allowed. Retry with a fixed example, current shell do not support interactive input"
         file_path = Path(working_directory)/filename
         with open(file_path,"w") as f:
             f.write(content)

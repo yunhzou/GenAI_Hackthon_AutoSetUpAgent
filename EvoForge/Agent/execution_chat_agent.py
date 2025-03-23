@@ -146,7 +146,11 @@ class LangGraphAgent(LangGraphSupporter):
     
     def sync_state(self, state:AgentState):
         tool_message = state["messages"][-1]
-        return {"messages_clean": [tool_message]}
+        structured_tool_message, _ = self.structure_tool_message(tool_message)
+        state["messages"][-1] = structured_tool_message
+        
+        
+        return {"messages":state["messages"],"messages_clean": [tool_message]}
 
     def _record_target_task(self,state:AgentState):
         target_task = content_read_out(state["messages_clean"][-1])

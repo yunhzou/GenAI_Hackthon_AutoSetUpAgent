@@ -8,7 +8,7 @@ from langgraph.graph.message import add_messages
 from langgraph.graph.graph import CompiledGraph
 from langchain_core.messages import SystemMessage
 from langchain_core.tools import BaseTool
-from langchain_core.messages import HumanMessage, BaseMessage
+from langchain_core.messages import HumanMessage, BaseMessage, ToolMessage
 from langgraph.graph import StateGraph, END, START
 from .agent_utils import image_to_base64, get_date, content_read_out
 import copy
@@ -343,6 +343,20 @@ class LangGraphSupporter(ABC):
             content=[{"type": "text", "text": user_input_clean}] + [{"type": "image_url", "image_url": {"url": img}} for img in image_data]
         )
         return user_input, user_input_clean
+    
+    def structure_tool_message(self,tool_message:ToolMessage):
+        tool_message_clean = copy.deepcopy(tool_message)
+        if len(self.message_blocks)>0:
+            additional_message = ""
+            for block in self.message_blocks:
+                block_name, block_description, block_update_function = block
+                # by default must have **kwargs in the block_update_function
+                block_information = block_update_function()
+                additional_message += f"\n{block_name}:\n{block_description}\n{block_information}\n"
+            tool_message.content = tool_message.content + additional_message
+
+        return tool_message, tool_message_clean
+        
     
     def change_continue_from_error(self,continue_from_error:bool):
         self.agent.update_state(self.config,{"continue_from_error":continue_from_error})
