@@ -24,7 +24,7 @@ class TaskDecompositionAgent(LangGraphSupporter):
 
     class plan(BaseModel):
         target: str = Field(description="description of the general target")
-        steps: List["TaskDecompositionAgent.susubtaskb_task"] = Field(description="list of tasks")
+        steps: List["TaskDecompositionAgent.subtask"] = Field(description="list of tasks")
         
         @model_validator(mode='before')
         def validate_and_fix_structure(cls, values):
