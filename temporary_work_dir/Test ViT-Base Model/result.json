@@ -1,0 +1,7 @@
+{
+    "model": "google/vit-base-patch16-224",
+    "image_url": "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?mark=https%3A%2F%2Fimages.unsplash.com%2Fopengraph%2Flogo.png&mark-w=64&mark-align=top%2Cleft&mark-pad=50&h=630&w=1200&crop=faces%2Cedges&blend-w=1&blend=000000&blend-mode=normal&blend-alpha=10&auto=format&fit=crop&q=60&ixid=M3wxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNzQyNzI5MTU2fA&ixlib=rb-4.0.3",
+    "predicted_class_idx": 283,
+    "predicted_class": "Persian cat",
+    "confidence": 0.6360548138618469
+}

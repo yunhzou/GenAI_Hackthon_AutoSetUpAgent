@@ -1,0 +1,26 @@
+{
+    "model": "facebook/convnext-tiny-224",
+    "image": "cat_with_sunglasses.jpg",
+    "predictions": [
+        {
+            "label": "sunglasses, dark glasses, shades",
+            "probability": 0.47324684262275696
+        },
+        {
+            "label": "sunglass",
+            "probability": 0.29896047711372375
+        },
+        {
+            "label": "Egyptian cat",
+            "probability": 0.059540044516325
+        },
+        {
+            "label": "tiger cat",
+            "probability": 0.03867229446768761
+        },
+        {
+            "label": "tabby, tabby cat",
+            "probability": 0.028527509421110153
+        }
+    ]
+}

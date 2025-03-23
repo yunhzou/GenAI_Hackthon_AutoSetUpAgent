@@ -1,0 +1,28 @@
+{
+    "top_prediction": {
+        "label": "sunglass",
+        "score": 0.09912344813346863
+    },
+    "top_5_predictions": [
+        {
+            "label": "sunglass",
+            "score": 5.966362953186035
+        },
+        {
+            "label": "Persian cat",
+            "score": 5.915922164916992
+        },
+        {
+            "label": "sunglasses, dark glasses, shades",
+            "score": 5.839670658111572
+        },
+        {
+            "label": "teddy, teddy bear",
+            "score": 5.307858467102051
+        },
+        {
+            "label": "pug, pug-dog",
+            "score": 5.065231800079346
+        }
+    ]
+}

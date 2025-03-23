@@ -1,0 +1,35 @@
+{
+    "image": "cat_with_sunglasses.jpg",
+    "model": "microsoft/swin-tiny-patch4-window7-224",
+    "top_prediction": {
+        "label": "sunglasses, dark glasses, shades",
+        "confidence": 0.474800705909729
+    },
+    "top_5_predictions": [
+        {
+            "rank": 1,
+            "label": "sunglasses, dark glasses, shades",
+            "score": 0.474800705909729
+        },
+        {
+            "rank": 2,
+            "label": "sunglass",
+            "score": 0.19496387243270874
+        },
+        {
+            "rank": 3,
+            "label": "Egyptian cat",
+            "score": 0.09767208993434906
+        },
+        {
+            "rank": 4,
+            "label": "tabby, tabby cat",
+            "score": 0.02896673046052456
+        },
+        {
+            "rank": 5,
+            "label": "tiger cat",
+            "score": 0.024627238512039185
+        }
+    ]
+}

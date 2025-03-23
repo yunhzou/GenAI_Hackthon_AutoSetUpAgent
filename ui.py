@@ -127,7 +127,7 @@ for entry in st.session_state.chat_history:
                         max-width:80%;">
                         <strong>[{formatted_time}] EvoForge:</strong> {message}
                     </div>
-                </div>
+                </div>  
                 """, unsafe_allow_html=True)
         with col2:
             st.empty()

@@ -1,0 +1,9 @@
+{
+    "model": "facebook/deit-tiny-distilled-patch16-224",
+    "image": "cat_with_sunglasses.jpg",
+    "prediction": {
+        "class_id": 285,
+        "class_name": "Egyptian cat",
+        "confidence": 0.14955219626426697
+    }
+}

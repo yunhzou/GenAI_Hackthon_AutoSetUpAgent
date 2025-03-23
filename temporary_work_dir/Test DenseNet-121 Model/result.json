@@ -1,0 +1,32 @@
+{
+    "model": "timm/densenet121.tv_in1k",
+    "top_prediction": "sunglass",
+    "top_prediction_confidence": 0.5822637677192688,
+    "top5_predictions": [
+        {
+            "rank": 1,
+            "label": "sunglass",
+            "probability": 0.5822637677192688
+        },
+        {
+            "rank": 2,
+            "label": "sunglasses, dark glasses, shades",
+            "probability": 0.3734435737133026
+        },
+        {
+            "rank": 3,
+            "label": "tabby, tabby cat",
+            "probability": 0.012546001002192497
+        },
+        {
+            "rank": 4,
+            "label": "Egyptian cat",
+            "probability": 0.011726601980626583
+        },
+        {
+            "rank": 5,
+            "label": "tiger cat",
+            "probability": 0.009847619570791721
+        }
+    ]
+}

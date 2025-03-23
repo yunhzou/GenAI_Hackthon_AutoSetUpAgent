@@ -1,0 +1,33 @@
+{
+    "top_prediction": {
+        "label": "sunglasses, dark glasses, shades",
+        "score": 0.6384174227714539
+    },
+    "top_5_predictions": [
+        {
+            "rank": 1,
+            "label": "sunglasses, dark glasses, shades",
+            "score": 0.6384174227714539
+        },
+        {
+            "rank": 2,
+            "label": "sunglass",
+            "score": 0.324826180934906
+        },
+        {
+            "rank": 3,
+            "label": "Egyptian cat",
+            "score": 0.004146514926105738
+        },
+        {
+            "rank": 4,
+            "label": "tiger cat",
+            "score": 0.0035675803665071726
+        },
+        {
+            "rank": 5,
+            "label": "tabby, tabby cat",
+            "score": 0.0030070762149989605
+        }
+    ]
+}

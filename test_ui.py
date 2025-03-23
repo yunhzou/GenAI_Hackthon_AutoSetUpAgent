@@ -1,44 +1,46 @@
 import streamlit as st
-import time
 import threading
+import time
+import pymongo
+
+# MongoDB setup
+client = pymongo.MongoClient("mongodb://localhost:27017/")
+db = client["chat_history"]
+collection = db["agent_history"]
+
+# Get distinct thread_ids
+thread_ids = collection.distinct("thread_id")
 
 # Set page title
 st.set_page_config(page_title="Multi-Task Progress Tracker", page_icon="📊")
 st.title("📊 Multi-Task Progress Tracker")
 
-# Define tasks
-tasks = {
-    "Task 1": {"bar": None, "status": None},
-    "Task 2": {"bar": None, "status": None},
-    "Task 3": {"bar": None, "status": None},
-}
+# Initialize task storage
+tasks = {}
 
-# Initialize progress bars
-for task in tasks:
-    st.write(f"### {task}")
-    tasks[task]["bar"] = st.progress(0, text=f"Loading {task}...")
-    tasks[task]["status"] = st.empty()
+# Create progress bars dynamically
+for thread_id in thread_ids:
+    st.write(f"### Thread {thread_id}")
+    tasks[thread_id] = {
+        "bar": st.progress(0, text=""),
+        "status": st.empty()
+    }
 
-# Function to update progress bars asynchronously
-def update_progress(task_name):
-    """Simulates progress updates for each task independently."""
+# Function to simulate task progress
+def update_progress(thread_id):
     progress = 0
     while progress < 100:
-        progress += 2  # Increment progress
-        progress = min(progress, 100)  # Ensure it does not exceed 100%
-        
-        # Update progress bar
-        tasks[task_name]["bar"].progress(progress, text=f"{task_name} progress: {progress}%")
-        time.sleep(0.05)  # Simulate processing time
+        progress += 2
+        time.sleep(0.05)
 
-    # Display completion message
-    tasks[task_name]["status"].success(f"✅ {task_name} - Task Complete!")
+        # Only show label if progress > 1%
+        label = f"Thread {thread_id} progress: {progress}%" if progress > 1 else ""
+        tasks[thread_id]["bar"].progress(progress, text=label)
 
-# Launch progress updates in separate threads
-for task_name in tasks:
-    threading.Thread(target=update_progress, args=(task_name,), daemon=True).start()
+    tasks[thread_id]["status"].success(f"✅ Thread {thread_id} - Task Complete!")
 
-st.success("✅ All tasks are running in parallel!")
+# Start each task in a thread
+for thread_id in thread_ids:
+    threading.Thread(target=update_progress, args=(thread_id,), daemon=True).start()
 
-if st.button("🔄 Restart Simulation"):
-    st.rerun()  # Refresh UI to restart progress
+st.success("✅ All MongoDB tasks are running in parallel!")

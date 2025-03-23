@@ -1,0 +1,27 @@
+{
+    "model": "microsoft/resnet-50",
+    "image_url": "https://images.unsplash.com/photo-1533738363-b7f9aef128ce?mark=https%3A%2F%2Fimages.unsplash.com%2Fopengraph%2Flogo.png&mark-w=64&mark-align=top%2Cleft&mark-pad=50&h=630&w=1200&crop=faces%2Cedges&blend-w=1&blend=000000&blend-mode=normal&blend-alpha=10&auto=format&fit=crop&q=60&ixid=M3wxMjA3fDB8MXxhbGx8fHx8fHx8fHwxNzQyNzMzNjMzfA&ixlib=rb-4.0.3",
+    "predicted_class": "tabby, tabby cat",
+    "top5_predictions": [
+        {
+            "label": "tabby, tabby cat",
+            "score": -0.7363941669464111
+        },
+        {
+            "label": "sunglasses, dark glasses, shades",
+            "score": -1.6748735904693604
+        },
+        {
+            "label": "Egyptian cat",
+            "score": -1.8236596584320068
+        },
+        {
+            "label": "sunglass",
+            "score": -2.3713479042053223
+        },
+        {
+            "label": "tiger cat",
+            "score": -2.395705223083496
+        }
+    ]
+}

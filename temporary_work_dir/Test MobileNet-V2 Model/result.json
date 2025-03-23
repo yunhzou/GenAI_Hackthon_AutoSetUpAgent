@@ -1,0 +1,34 @@
+{
+    "image_path": "cat_with_sunglasses.jpg",
+    "top_prediction": {
+        "label": "Egyptian cat",
+        "probability": 0.44269219040870667
+    },
+    "top5_predictions": [
+        {
+            "rank": 1,
+            "label": "Egyptian cat",
+            "probability": 0.44269219040870667
+        },
+        {
+            "rank": 2,
+            "label": "tiger cat",
+            "probability": 0.27486753463745117
+        },
+        {
+            "rank": 3,
+            "label": "tabby, tabby cat",
+            "probability": 0.07711508870124817
+        },
+        {
+            "rank": 4,
+            "label": "ping-pong ball",
+            "probability": 0.060061872005462646
+        },
+        {
+            "rank": 5,
+            "label": "pick, plectrum, plectron",
+            "probability": 0.015483957715332508
+        }
+    ]
+}
