@@ -61,13 +61,9 @@ st.markdown(
 )
 
 # Function to run async tasks safely in Streamlit
-def run_async_task(task):
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:  # If no running loop exists, create a new one
-        loop = asyncio.new_event_loop()
-        asyncio.set_event_loop(loop)
-    return loop.run_until_complete(task)
+
+
+
 
 # Retrieve thread ID
 if 'thread_id' not in st.session_state:
@@ -79,14 +75,22 @@ st.title("🤖 EvoForge")
 st.markdown("EvoForge will assist your repo research process according to your needs!")
 
 # Fetch chat history (use correct event loop handling)
-if "chat_history" not in st.session_state:
-    st.session_state.chat_agent_history = run_async_task(get_agent_chat_history(thread_id))
-    st.session_state.chat_user_history = run_async_task(get_user_chat_history(thread_id))
+import nest_asyncio
+nest_asyncio.apply()
+
+loop = asyncio.get_event_loop()
+
+if "chat_user_history" not in st.session_state:
+    st.session_state.chat_user_history = loop.run_until_complete(get_user_chat_history(thread_id))
+
+if "chat_agent_history" not in st.session_state:
+    st.session_state.chat_agent_history = loop.run_until_complete(get_agent_chat_history(thread_id))
+
     
     
 
 st.markdown("### Chat History")
-for entry in st.session_state.chat_history:
+for entry in st.session_state.chat_agent_history:
     timestamp = entry["timestamp"]
     formatted_time = timestamp.strftime("%Y-%m-%d %H:%M:%S")
     message = entry["formatted_history"].get("action", "")
