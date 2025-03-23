@@ -47,11 +47,23 @@ def ask_question_to_user(question:Annotated[str,"The question to ask the user"])
     return input(f"Agent is asking: {question}, please type your feedback" )
 
 @tool
-def create_file(filename:Annotated[str,"The name of the file to create"],content:Annotated[str,"The content of the file"]):
-    """Create a file with the given content"""
-    with open(filename,"w") as f:
+def create_file(
+    filename: Annotated[str, "The name of the file to create"],
+    content: Annotated[str, "The content of the file"]
+) -> str:
+    """
+    Create a file with the given content in the specified directory.
+    """
+    # Ensure the directory exists
+    os.makedirs(local_working_directory, exist_ok=True)
+    
+    # Build the full file path
+    file_path = os.path.join(local_working_directory, filename)
+    
+    with open(file_path, "w") as f:
         f.write(content)
-    return f"File {filename} created"    
+        
+    return f"File {file_path} created." 
 
 @tool
 def append_to_file(
