@@ -66,7 +66,7 @@ def generate_tree_structure(base_path, ignore_patterns, prefix="", root_path=Non
             # It's a file
             if base_path == root_path:
                 # If it's directly under the root
-                tree.append(f"{prefix}{connector}{item} (require organization, please organize this file into a folder)")
+                tree.append(f"{prefix}{connector}{item} (located in root)")
             else:
                 # If it's inside a subfolder
                 tree.append(f"{prefix}{connector}{item} (located in '{folder_name}' folder)")

@@ -140,7 +140,7 @@ class LangGraphAgent(LangGraphSupporter):
         message_hisotry.append(HumanMessage(content=f"The target is {target}, Based on the history. What is the progress? Note the past progress is {state['progress']}"))
         parsed_response = self.sturctured_llm.invoke(message_hisotry).model_dump()  
         progress = parsed_response["progress_percentage"]
-        self.formatted_history_record = {"progress":progress}
+        self.formatted_history_record["progress"] = progress
         print("The current progress is ",progress)
         return {"progress":progress}    
     
@@ -153,6 +153,7 @@ class LangGraphAgent(LangGraphSupporter):
         return {"target_task":target_task,"progress":0}
 
     def call_model(self,state: AgentState):
+        self.formatted_history_record = {}
         message_history = self.get_message_history(state)
         try:
             response = self.llm_with_tools.invoke(message_history)
@@ -182,7 +183,8 @@ class LangGraphAgent(LangGraphSupporter):
                 print(f"Tool call: {tool_name} with args: {args}")
                 print('response')
                 print(response)
-                self.formatted_history_record = {"action":content_read_out(response), "tool_used": tool_informations}
+                self.formatted_history_record["action"] =content_read_out(response) 
+                self.formatted_history_record["tool_used"]= tool_informations
 
                 print(self.session_id)
                 print(self.agent_name)
@@ -194,7 +196,7 @@ class LangGraphAgent(LangGraphSupporter):
                         })
             return {"messages": [response],"messages_clean": [response],"tool_used": tool_informations,"session_id":self.session_id,"memory_db_name":self.memory_db_name}
         
-        self.formatted_history_record = {"action":content_read_out(response)}
+        self.formatted_history_record["action"] = content_read_out(response)
         print('response')
         print(content_read_out(response))
 
@@ -208,96 +210,3 @@ class LangGraphAgent(LangGraphSupporter):
                 })
         return {"messages": [response],"messages_clean": [response],"session_id":self.session_id,"memory_db_name":self.memory_db_name}
     
-
-    def call_model_stream(self, state: AgentState):
-        message_history = self.get_message_history(state)
-        
-
-        # Use a dict to track the latest tool arguments per tool_name
-        tool_informations_dict = {}
-        chunks = []
-        try:
-            current_time = datetime.utcnow()
-            for chunk in self.llm_with_tools.stream(message_history):
-                # Accumulate chunks
-                chunks.append(chunk)
-                if len(chunks) == 1:
-                    response = chunks[0]
-                elif len(chunks) > 1:
-                    response = chunks[0]
-                    for subsequent in chunks[1:]:
-                        response += subsequent
-                if response.content==[] and response.tool_calls==[]:
-                    # wait 
-                    continue
-                else:
-                    # Update or replace existing tool calls
-                    if response.tool_calls:
-                        for tool_call in response.tool_calls:
-                            tool_name = tool_call.get('name', '')
-                            args = tool_call.get('args', {})
-                            # Store or update the latest arguments for each tool_name
-                            tool_informations_dict[tool_name] = args
-
-                    # Convert the dict into a list for easy JSON consumption
-                    tool_informations = [
-                        {"tool_name": name, "args": tool_informations_dict[name],"toolcall_timestamp" : datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")}
-                        for name in tool_informations_dict
-                    ]
-
-                    if tool_informations == []:
-                        self.formatted_history_record = {
-                            "action": content_read_out(response)}
-                    else:
-                        # Build the record for partial streaming data
-                        self.formatted_history_record = {
-                            "action": content_read_out(response),
-                            "tool_used": tool_informations
-                        }
-
-                    # Update the existing MongoDB record (instead of inserting)
-                    self.memory_manager.agent_chat.update_one(
-                        {"thread_id": self.session_id, "timestamp": current_time},
-                        {
-                            "$set": {
-                                "formatted_history": self.formatted_history_record,
-                                "agent": self.agent_name,
-                                "streaming":False
-                            }
-                        },
-                        upsert=True
-                    )
-
-            # Handle empty content quirk
-            if response.content==[] and response.tool_calls==[]:
-                tool_informations = []
-                Warning("Claude bug")
-                response.content = (
-                    "At this point, I might need user input to continue. "
-                    "Let me know what is next or just ask me to continue."
-                )
-            # Update the existing MongoDB record (instead of inserting)
-            self.memory_manager.agent_chat.update_one(
-                {"thread_id": self.session_id, "timestamp": current_time},
-                {
-                    "$set": {
-                        "formatted_history": self.formatted_history_record,
-                        "agent": self.agent_name,
-                        "streaming":False
-                    }
-                },
-                upsert=True
-            )
-
-            # Return final result once all streaming chunks are processed
-            return {
-                "messages": [response],
-                "messages_clean": [response],
-                "tool_used": tool_informations,
-                "session_id": self.session_id,
-                "memory_db_name": self.memory_db_name
-            }
-
-        except Exception as e:
-            #raise LLM_Failure(f"LLM Error: {e}") from e
-            raise e

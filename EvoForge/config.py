@@ -12,6 +12,10 @@ def connect_to_mongodb(uri):
         print(e)
         raise Exception("Unable to connect to the MongoDB deployment. Check your URI")        
 
+working_directory = os.getenv("LOCAL_WORKING_DIRECTORY")
+# check if working dir exists
+if not os.path.exists(working_directory):
+    os.makedirs(working_directory)
 
 if os.getenv("override") == "false":
     load_dotenv(".env")

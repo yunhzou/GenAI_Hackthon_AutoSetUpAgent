@@ -21,13 +21,25 @@ def read_webpage(url: str) -> str:
     response = requests.get("https://r.jina.ai/" + url)
     return response.text
 
-shell = InteractiveShell(root_dir=local_working_directory)
 
-@tool
-def execute_shell_command(shell_command:Annotated[str,"The shell command to execute"]):
-    """Execute a shell command and return the output, the shell is preserved by session, thus it is fine to cd first and then ls."""
-    output = shell.execute(shell_command)
-    return output
+
+
+def create_execute_shell_command_tool(working_directory:str):
+    shell = InteractiveShell(root_dir=working_directory)
+    @tool
+    def execute_shell_command(shell_command: str) -> str:
+        """Execute a shell command and return the output, the shell is preserved by session, thus it is fine to cd first and then ls."""
+        output = shell.execute(shell_command)
+        return output
+    return execute_shell_command
+    
+    
+
+# @tool
+# def execute_shell_command(shell_command:Annotated[str,"The shell command to execute"]):
+#     """Execute a shell command and return the output, the shell is preserved by session, thus it is fine to cd first and then ls."""
+#     output = shell.execute(shell_command)
+#     return output
 
 @tool 
 def ask_question_to_user(question:Annotated[str,"The question to ask the user"]):
