@@ -13,7 +13,7 @@ from langgraph.graph import StateGraph, END, START
 from .agent_utils import image_to_base64, get_date, content_read_out
 import copy
 from operator import add
-from .config import nosql_service
+from EvoForge.config import nosql_service
 
 
 

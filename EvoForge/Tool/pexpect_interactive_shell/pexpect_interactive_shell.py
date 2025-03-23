@@ -4,17 +4,15 @@ import pexpect
 import sys
 
 class InteractiveShell:
-    def __init__(self):
-        # Start a clean bash shell without user config files, disabling echo
+    def __init__(self, root_dir=None):
         self.shell = pexpect.spawn('/bin/bash', encoding='utf-8', timeout=7200, echo=False)
-
-        # Send output to stdout for visual feedback
         self.shell.logfile_read = sys.stdout
-
-        # Set a predictable prompt
         self.shell.sendline('export PS1="PROMPT$ "')
         self.shell.expect(r'PROMPT\$ ')
         self.prompt = r'PROMPT\$ '
+        # Set root directory if provided
+        if root_dir:
+            self.execute(f'cd {root_dir}')
 
     def execute(self, command):
         self.shell.sendline(command)

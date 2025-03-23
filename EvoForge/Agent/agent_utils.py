@@ -3,8 +3,8 @@ from langchain_openai import OpenAIEmbeddings
 import httpx
 import base64
 from datetime import datetime
-from .config import openai_api_key
-from .config import nosql_service
+from EvoForge.config import openai_api_key
+from EvoForge.config import nosql_service
 from langchain_core.messages import BaseMessage, AIMessage
 import mimetypes
 

@@ -14,18 +14,25 @@ from datetime import datetime
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_anthropic import ChatAnthropic
 import os 
-from langchain_core.messages import AIMessage
+from langchain_core.messages import AIMessage, HumanMessage
+
 
 class LangGraphAgent(LangGraphSupporter):   
+    class Progress(BaseModel):
+        """Template to formulate an action proposal which only contains one action """
+        progress_percentage: int = Field(description="An estimate of current progress in percentage.")
+
     class AgentState(TypedDict):
         target_task:str
         agent_name:str
+        progress: int
         messages: Annotated[list, add_messages]
         messages_clean: Annotated[list, add_messages]
         tool_used: Annotated[List[dict], add]
         session_id: Optional[str] 
         memory_db_name: Optional[str]
         continue_from_error: Optional[bool] = False
+        
         """
         AgentState is the global graph state manager. Think of each field as global variables that can be accessed by each node of graph
 
@@ -56,6 +63,7 @@ class LangGraphAgent(LangGraphSupporter):
             usersetup (_type_): user instructions that the assitant will always follow
         """
         self.model=model
+        self.progress_schema = self.Progress
         if "gpt" in model:
             self.llm = ChatOpenAI(temperature=0,model=model,max_tokens=None, **kwargs)
         elif "gemini" in model:
@@ -87,6 +95,7 @@ class LangGraphAgent(LangGraphSupporter):
     def _create_agent(self)->CompiledGraph:
         workflow = StateGraph(self.graph_state)
         tools2add = self.tools+self.un_detachable_tools
+        self.sturctured_llm = self.llm.with_structured_output(self.progress_schema)
         if tools2add != []:
             tool_node = AgentNetToolNode(tools2add,
                                          handle_tool_errors=self.handle_tool_errors)
@@ -100,11 +109,13 @@ class LangGraphAgent(LangGraphSupporter):
             workflow.add_node("agent", self.call_model)
             workflow.add_node("tools", tool_node)
             workflow.add_node("sync_messages", self.sync_state)
+            workflow.add_node("progress_estimate", self.progress_estimation)
             workflow.add_edge(START, "Record_Target")
             workflow.add_edge("Record_Target", "agent")
             workflow.add_conditional_edges("agent", self.should_continue, {"tools": "tools", END: END})
             workflow.add_edge("tools", "sync_messages")
-            workflow.add_edge("sync_messages", "agent")
+            workflow.add_edge("sync_messages", "progress_estimate")
+            workflow.add_edge("progress_estimate", "agent")
         else:
             # If no tools, it will be chatbot
             self.llm_with_tools = self.llm
@@ -120,7 +131,18 @@ class LangGraphAgent(LangGraphSupporter):
         last_message = messages[-1]
         if last_message.tool_calls:
             return "tools"
+        self.formatted_history_record["progress"] = 100
         return END
+    
+    def progress_estimation(self,state:AgentState):
+        message_hisotry = self.get_message_history(state)
+        target = state["target_task"]
+        message_hisotry.append(HumanMessage(content=f"The target is {target}, Based on the history. What is the progress? Note the past progress is {state['progress']}"))
+        parsed_response = self.sturctured_llm.invoke(message_hisotry).model_dump()  
+        progress = parsed_response["progress_percentage"]
+        self.formatted_history_record = {"progress":progress}
+        print("The current progress is ",progress)
+        return {"progress":progress}    
     
     def sync_state(self, state:AgentState):
         tool_message = state["messages"][-1]
@@ -128,7 +150,7 @@ class LangGraphAgent(LangGraphSupporter):
 
     def _record_target_task(self,state:AgentState):
         target_task = content_read_out(state["messages_clean"][-1])
-        return {"target_task":target_task}
+        return {"target_task":target_task,"progress":0}
 
     def call_model(self,state: AgentState):
         message_history = self.get_message_history(state)
