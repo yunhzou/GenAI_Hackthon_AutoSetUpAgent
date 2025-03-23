@@ -5,6 +5,7 @@ from .python_repl import PythonREPL
 import os
 import subprocess
 from .pexpect_interactive_shell import InteractiveShell
+from pathlib import Path
 
 local_working_directory = os.getenv("LOCAL_WORKING_DIRECTORY")
 
@@ -32,26 +33,22 @@ def create_execute_shell_command_tool(working_directory:str):
         output = shell.execute(shell_command)
         return output
     return execute_shell_command
-    
-    
 
-# @tool
-# def execute_shell_command(shell_command:Annotated[str,"The shell command to execute"]):
-#     """Execute a shell command and return the output, the shell is preserved by session, thus it is fine to cd first and then ls."""
-#     output = shell.execute(shell_command)
-#     return output
 
 @tool 
 def ask_question_to_user(question:Annotated[str,"The question to ask the user"]):
     """Ask a question to the user and return the answer"""
     return input(f"Agent is asking: {question}, please type your feedback" )
 
-@tool
-def create_file(filename:Annotated[str,"The name of the file to create"],content:Annotated[str,"The content of the file"]):
-    """Create a file with the given content"""
-    with open(filename,"w") as f:
-        f.write(content)
-    return f"File {filename} created"    
+def create_create_file_tool(working_directory:str):
+    @tool
+    def create_file(filename:Annotated[str,"The name of the file to create"],content:Annotated[str,"The content of the file"]):
+        """Create a file with the given content"""
+        file_path = Path(working_directory)/filename
+        with open(file_path,"w") as f:
+            f.write(content)
+        return f"File {filename} created"    
+    return create_file
 
 @tool
 def append_to_file(

@@ -28,6 +28,7 @@ class EvoForge:
     def spawn_setup_agent(self,session:str,model:str="claude-3-7-sonnet-20250219"):
         """Spawn an agent in the given session"""
         execute_shell_command = create_execute_shell_command_tool(Path(local_working_directory)/session)
+        create_file = create_create_file_tool(Path(local_working_directory)/session)
         setup_tools = [read_webpage,execute_shell_command,ask_question_to_user,create_file]
         setup_agent = LangGraphAgent(model=model,session_id=session)
         setup_agent.rewrite_system_message(SETUP_AGENT_SYSTEM_MESSAGE)

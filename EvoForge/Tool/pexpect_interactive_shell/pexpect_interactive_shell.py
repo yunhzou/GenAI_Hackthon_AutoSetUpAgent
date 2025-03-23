@@ -15,6 +15,9 @@ class InteractiveShell:
             self.execute(f'cd {root_dir}')
 
     def execute(self, command):
+        if "create" in command:
+            if "hf" in command:
+                return "Note: ✅ Environment 'hf' already created. Activate directly with 'micromamba activate hf'."
         self.shell.sendline(command)
         self.shell.expect(self.prompt)
         # Grab everything before the prompt
