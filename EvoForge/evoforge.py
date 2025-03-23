@@ -30,33 +30,39 @@ class EvoForge:
     def spawn_setup_agent(self,session:str,model:str="claude-3-7-sonnet-20250219"):
         """Spawn an agent in the given session"""
         # check if the session folder exists, if not create it
-        if not os.path.exists(Path(local_working_directory)/session):
-            os.makedirs(Path(local_working_directory)/session)
-        execute_shell_command = create_execute_shell_command_tool(Path(local_working_directory)/session)
-        create_file = create_create_file_tool(Path(local_working_directory)/session)
+        if session == None:
+            full_path = Path(local_working_directory)
+        else:
+            full_path = Path(local_working_directory)/session
+        if not os.path.exists(full_path):
+            os.makedirs(full_path)
+        execute_shell_command = create_execute_shell_command_tool(full_path)
+        create_file = create_create_file_tool(full_path)
         setup_tools = [read_webpage,execute_shell_command,ask_question_to_user,create_file]
+        if session == None:
+            session = "root"
         setup_agent = LangGraphAgent(model=model,session_id=session)
         setup_agent.rewrite_system_message(SETUP_AGENT_SYSTEM_MESSAGE)
         setup_agent.add_tool(setup_tools)
-        update_grounding_function = self.create_update_grounding(Path(local_working_directory)/session)
+        update_grounding_function = self.create_update_grounding(full_path)
         setup_agent.inject_text_block_human_message(block_name="file_directory_view",
         block_description="",block_update_function=update_grounding_function)
         return setup_agent
     
 
-#TODO: teaching and expert currently are not in use
-    def spawn_teaching_material_agent(self,session:str,model:str="claude-3-7-sonnet-20250219"):
-        """Spawn an agent in the given session"""
-        teaching_material_tools = [read_webpage,execute_shell_command,ask_question_to_user,create_file]
-        teaching_material_agent = LangGraphAgent(model=model,session_id=session)
-        teaching_material_agent.rewrite_system_message(TEACHING_AGENT_SYSTEM_MESSAGE)
-        teaching_material_agent.add_tool(teaching_material_tools)
-        return teaching_material_agent
+# #TODO: teaching and expert currently are not in use
+#     def spawn_teaching_material_agent(self,session:str,model:str="claude-3-7-sonnet-20250219"):
+#         """Spawn an agent in the given session"""
+#         teaching_material_tools = [read_webpage,execute_shell_command,ask_question_to_user,create_file]
+#         teaching_material_agent = LangGraphAgent(model=model,session_id=session)
+#         teaching_material_agent.rewrite_system_message(TEACHING_AGENT_SYSTEM_MESSAGE)
+#         teaching_material_agent.add_tool(teaching_material_tools)
+#         return teaching_material_agent
     
-    def spawn_expert_agent(self,session:str,model:str="claude-3-7-sonnet-20250219"):
-        """Spawn an agent in the given session"""
-        expert_tools = [read_webpage,execute_shell_command,ask_question_to_user,create_file]
-        expert_agent = LangGraphAgent(model=model,session_id=session)
-        expert_agent.rewrite_system_message(EXPERT_SYSTEM_MESSAGE)
-        expert_agent.add_tool(expert_tools)
-        return expert_agent 
+#     def spawn_expert_agent(self,session:str,model:str="claude-3-7-sonnet-20250219"):
+#         """Spawn an agent in the given session"""
+#         expert_tools = [read_webpage,execute_shell_command,ask_question_to_user,create_file]
+#         expert_agent = LangGraphAgent(model=model,session_id=session)
+#         expert_agent.rewrite_system_message(EXPERT_SYSTEM_MESSAGE)
+#         expert_agent.add_tool(expert_tools)
+#         return expert_agent 

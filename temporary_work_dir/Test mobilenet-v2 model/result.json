@@ -1,33 +1,5 @@
 {
-  "top_prediction": {
-    "label": "Egyptian cat",
-    "score": 0.44269219040870667
-  },
-  "top_5_predictions": [
-    {
-      "rank": 1,
-      "label": "Egyptian cat",
-      "score": 0.44269219040870667
-    },
-    {
-      "rank": 2,
-      "label": "tiger cat",
-      "score": 0.27486753463745117
-    },
-    {
-      "rank": 3,
-      "label": "tabby, tabby cat",
-      "score": 0.07711508870124817
-    },
-    {
-      "rank": 4,
-      "label": "ping-pong ball",
-      "score": 0.060061872005462646
-    },
-    {
-      "rank": 5,
-      "label": "pick, plectrum, plectron",
-      "score": 0.015483957715332508
-    }
-  ]
+    "predicted_class_index": 286,
+    "predicted_label": "Egyptian cat",
+    "confidence_score": 0.44269219040870667
 }

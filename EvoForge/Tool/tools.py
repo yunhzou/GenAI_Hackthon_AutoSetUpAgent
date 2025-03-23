@@ -68,42 +68,42 @@ def append_to_file(
     except Exception as e:
         return f"❌ Failed to append: {e}"
 
-@tool
-def run_python_file(filename: Annotated[str, "Name of the Python file to run"]) -> str:
-    """
-    Runs a Python file and returns the output.
-    """
-    try:
-        result = run(["python", filename], capture_output=True, text=True)
-        if result.returncode == 0:
-            return f"✅ Output:\n{result.stdout}"
-        else:
-            return f"⚠️ Error:\n{result.stderr}"
-    except Exception as e:
-        return f"❌ Failed to run file: {e}"
+# @tool
+# def run_python_file(filename: Annotated[str, "Name of the Python file to run"]) -> str:
+#     """
+#     Runs a Python file and returns the output.
+#     """
+#     try:
+#         result = run(["python", filename], capture_output=True, text=True)
+#         if result.returncode == 0:
+#             return f"✅ Output:\n{result.stdout}"
+#         else:
+#             return f"⚠️ Error:\n{result.stderr}"
+#     except Exception as e:
+#         return f"❌ Failed to run file: {e}"
 
-@tool
-def play_audio(
-    file_path: Annotated[str, "Path to the audio file to play using afplay"]
-) -> str:
-    """
-    Play a local audio file using macOS's afplay command.
+# @tool
+# def play_audio(
+#     file_path: Annotated[str, "Path to the audio file to play using afplay"]
+# ) -> str:
+#     """
+#     Play a local audio file using macOS's afplay command.
 
-    Args:
-        file_path: The path to the audio file (e.g., 'output.wav')
+#     Args:
+#         file_path: The path to the audio file (e.g., 'output.wav')
 
-    Returns:
-        str: A confirmation message indicating success or failure.
-    """
-    if not os.path.exists(file_path):
-        return f"❌ File not found: {file_path}"
+#     Returns:
+#         str: A confirmation message indicating success or failure.
+#     """
+#     if not os.path.exists(file_path):
+#         return f"❌ File not found: {file_path}"
     
-    try:
-        # Run the afplay command
-        result = run(["afplay", file_path], capture_output=True, text=True)
-        if result.returncode == 0:
-            return f"🔊 Playing audio from: {file_path}"
-        else:
-            return f"⚠️ Error playing audio: {result.stderr}"
-    except Exception as e:
-        return f"❌ Failed to play audio: {e}"
+#     try:
+#         # Run the afplay command
+#         result = run(["afplay", file_path], capture_output=True, text=True)
+#         if result.returncode == 0:
+#             return f"🔊 Playing audio from: {file_path}"
+#         else:
+#             return f"⚠️ Error playing audio: {result.stderr}"
+#     except Exception as e:
+#         return f"❌ Failed to play audio: {e}"

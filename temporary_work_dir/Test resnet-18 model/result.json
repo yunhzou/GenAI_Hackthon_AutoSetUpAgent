@@ -1,28 +1,34 @@
 {
-    "top_prediction": {
-        "class": "Egyptian cat",
-        "confidence": 0.5645429491996765
-    },
+    "model": "microsoft/resnet-18",
+    "image_url": "https://unsplash.com/photos/russian-blue-cat-wearing-yellow-sunglasses-yMSecCHsIBc",
+    "predicted_class": "sunglasses, dark glasses, shades",
+    "predicted_class_id": 837,
+    "confidence": 0.6384174227714539,
     "top_5_predictions": [
         {
-            "class": "Egyptian cat",
-            "confidence": 0.5645429491996765
+            "class_id": 837,
+            "class_name": "sunglasses, dark glasses, shades",
+            "probability": 0.6384174227714539
         },
         {
-            "class": "tiger cat",
-            "confidence": 0.07471347600221634
+            "class_id": 836,
+            "class_name": "sunglass",
+            "probability": 0.324826180934906
         },
         {
-            "class": "tabby, tabby cat",
-            "confidence": 0.07260646671056747
+            "class_id": 285,
+            "class_name": "Egyptian cat",
+            "probability": 0.004146514926105738
         },
         {
-            "class": "plastic bag",
-            "confidence": 0.06971802562475204
+            "class_id": 282,
+            "class_name": "tiger cat",
+            "probability": 0.0035675803665071726
         },
         {
-            "class": "carton",
-            "confidence": 0.04158581420779228
+            "class_id": 281,
+            "class_name": "tabby, tabby cat",
+            "probability": 0.0030070762149989605
         }
     ]
 }

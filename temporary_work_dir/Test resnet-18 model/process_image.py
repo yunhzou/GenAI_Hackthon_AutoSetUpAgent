@@ -1,61 +1,70 @@
 import torch
 from transformers import AutoImageProcessor, AutoModelForImageClassification
-from PIL import Image
 import requests
-from io import BytesIO
+from PIL import Image
 import json
+import io
 
 # Download the image from Unsplash
 image_url = "https://unsplash.com/photos/russian-blue-cat-wearing-yellow-sunglasses-yMSecCHsIBc"
 response = requests.get(image_url)
-image_content = response.content
+webpage_content = response.text
 
-# Check if we got the actual image or the webpage
-if b"<!DOCTYPE html>" in image_content:
-    # If we got HTML, we need to extract the actual image URL
-    print("Got HTML instead of image, extracting actual image URL...")
-    # Try to get the actual image URL from the download link
-    response = requests.get("https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1686&q=80")
-    image_content = response.content
-
-# Load the image
-image = Image.open(BytesIO(image_content))
+# Extract the actual image URL from the webpage
+import re
+image_pattern = r'https://images\.unsplash\.com/photo-[^"]*'
+image_matches = re.findall(image_pattern, webpage_content)
+if image_matches:
+    actual_image_url = image_matches[0]
+    print(f"Found image URL: {actual_image_url}")
+    # Download the actual image
+    image_response = requests.get(actual_image_url)
+    image = Image.open(io.BytesIO(image_response.content))
+else:
+    print("Could not find image URL in the webpage")
+    exit(1)
 
 # Load the model and processor
-processor = AutoImageProcessor.from_pretrained("microsoft/resnet-18")
-model = AutoModelForImageClassification.from_pretrained("microsoft/resnet-18")
+model_name = "microsoft/resnet-18"
+processor = AutoImageProcessor.from_pretrained(model_name)
+model = AutoModelForImageClassification.from_pretrained(model_name)
 
 # Process the image
 inputs = processor(images=image, return_tensors="pt")
 with torch.no_grad():
     outputs = model(**inputs)
 
-# Get the predicted class
+# Get the predicted class and probabilities
 logits = outputs.logits
-predicted_class_idx = logits.argmax(-1).item()
+probabilities = torch.nn.functional.softmax(logits, dim=-1)
+predicted_class_idx = probabilities.argmax(-1).item()
 predicted_class = model.config.id2label[predicted_class_idx]
-
-# Get the probabilities
-probs = torch.nn.functional.softmax(logits, dim=-1)
-top_5_probs, top_5_indices = torch.topk(probs, 5)
-top_5_labels = [model.config.id2label[idx.item()] for idx in top_5_indices[0]]
-top_5_probs = top_5_probs[0].tolist()
+confidence = probabilities[0][predicted_class_idx].item()
 
 # Create result dictionary
 result = {
-    "top_prediction": {
-        "class": predicted_class,
-        "confidence": probs[0][predicted_class_idx].item()
-    },
-    "top_5_predictions": [
-        {"class": label, "confidence": prob} 
-        for label, prob in zip(top_5_labels, top_5_probs)
-    ]
+    "model": model_name,
+    "image_url": image_url,
+    "predicted_class": predicted_class,
+    "predicted_class_id": predicted_class_idx,
+    "confidence": confidence,
+    "top_5_predictions": []
 }
 
-# Save to JSON file
+# Get top 5 predictions
+topk_values, topk_indices = torch.topk(probabilities, 5, dim=-1)
+for i in range(5):
+    class_id = topk_indices[0][i].item()
+    class_name = model.config.id2label[class_id]
+    prob = topk_values[0][i].item()
+    result["top_5_predictions"].append({
+        "class_id": class_id,
+        "class_name": class_name,
+        "probability": prob
+    })
+
+# Save the result to a JSON file
 with open("result.json", "w") as f:
     json.dump(result, f, indent=4)
 
-print(f"Prediction complete. Top prediction: {predicted_class}")
 print("Results saved to result.json")
