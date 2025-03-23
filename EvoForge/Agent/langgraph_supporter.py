@@ -286,6 +286,9 @@ class LangGraphSupporter(ABC):
                                   image_urls:Optional[List[str]]=None,
                                   print_=False)->dict:
         """image_urls: list of image urls, can be local dir"""
+        collection = self.memory_manager.user_chat
+        current_timestamp = datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f")
+        collection.insert_one({"thread_id":f"{self.session_id}","query":user_input,"timestamp":current_timestamp,"agent":self.agent_name} )
         user_input,user_input_clean = self._structure_user_input(user_input,image_urls)
         messages = []
         if user_input is None:

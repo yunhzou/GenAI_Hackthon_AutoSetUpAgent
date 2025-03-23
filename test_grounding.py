@@ -1,0 +1,3 @@
+from EvoForge.grounding import generate_tree_structure
+
+generate_tree_structure

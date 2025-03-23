@@ -5,20 +5,26 @@ import asyncio
 import random
 import time
 import requests
+import os 
 
 # MongoDB Connection Setup (Motor Async)
-MONGO_URI = "mongodb://localhost:27017/"
+MONGO_URI = os.getenv("MONGODB_URL")
 DB_NAME = "chat_history"
-COLLECTION_NAME = "agent_history"
+AGENT_COLLECTION_NAME = "agent_history"
+USER_COLLECTION_NAME = "user_history"
 
 client = motor.motor_asyncio.AsyncIOMotorClient(MONGO_URI)
 db = client[DB_NAME]
-collection = db[COLLECTION_NAME]
-
+collection_agent = db[AGENT_COLLECTION_NAME]
+collection_user = db[USER_COLLECTION_NAME]
 # Function to retrieve chat history (async)
-async def get_chat_history(thread_id):
-    cursor = collection.find({"thread_id": thread_id}, {"_id": 0}).sort("timestamp", 1)
-    return await cursor.to_list(length=100)
+async def get_agent_chat_history(thread_id):
+    cursor = collection_agent.find({"thread_id": thread_id}, {"_id": 0}).sort("timestamp", 1)
+    return await cursor.to_list()
+
+async def get_user_chat_history(thread_id): 
+    cursor = collection_user.find({"thread_id": thread_id}, {"_id": 0}).sort("timestamp", 1)
+    return await cursor.to_list()
 
 def send_message(user_input):
     payload = {"thread_id": thread_id, "user_input": user_input}
@@ -54,29 +60,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Function to save user message (async)
-async def save_message(thread_id, user_input):
-    timestamp = datetime.datetime.utcnow()
-
-    # Save user message
-    human_entry = {
-        "timestamp": timestamp,
-        "thread_id": thread_id,
-        "formatted_history": {"action": user_input, "tool_used": []},
-        "agent": "human_user"
-    }
-    await collection.insert_one(human_entry)
-
-    # Generate and save AI assistant response
-    ai_response = generate_ai_response(user_input)
-    assistant_entry = {
-        "timestamp": timestamp,
-        "thread_id": thread_id,
-        "formatted_history": {"action": ai_response, "tool_used": []},
-        "agent": "assistant_bot"
-    }
-    await collection.insert_one(assistant_entry)
-
 # Function to run async tasks safely in Streamlit
 def run_async_task(task):
     try:
@@ -97,7 +80,10 @@ st.markdown("EvoForge will assist your repo research process according to your n
 
 # Fetch chat history (use correct event loop handling)
 if "chat_history" not in st.session_state:
-    st.session_state.chat_history = run_async_task(get_chat_history(thread_id))
+    st.session_state.chat_agent_history = run_async_task(get_agent_chat_history(thread_id))
+    st.session_state.chat_user_history = run_async_task(get_user_chat_history(thread_id))
+    
+    
 
 st.markdown("### Chat History")
 for entry in st.session_state.chat_history:
@@ -153,4 +139,6 @@ if st.button("Send") and user_input.strip():
         time.sleep(2)  # Placeholder task to simulate delay
         if send_message(user_input):
             st.rerun()  # Refresh chat after sending
+
+
 

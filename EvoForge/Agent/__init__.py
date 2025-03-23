@@ -1,3 +1,3 @@
-from .grounding import load_ignore_patterns,generate_tree_structure
+from ..grounding import load_ignore_patterns,generate_tree_structure
 from .execution_chat_agent import LangGraphAgent,LangGraphAgent
 from .langgraph_supporter import LangGraphSupporter
