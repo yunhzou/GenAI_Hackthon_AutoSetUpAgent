@@ -1,7 +1,7 @@
 # Youtube Video Explaination
 
-[Watch on YouTube](https://youtu.be/J7OVgkGcQ-8)
 
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/J7OVgkGcQ-8/0.jpg)](https://www.youtube.com/watch?v=J7OVgkGcQ-8)
 # How to install the env
 run pip install -r requirements.txt   
 
