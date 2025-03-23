@@ -1,18 +1,71 @@
-# How to install the env
-run pip install -r requirements.txt   
+# Mistral-1L-Tiny Model Setup
 
+This repository contains the setup for the `nilq/mistral-1L-tiny` model, a tiny single-layer 35.1M parameter Mistral model with a hidden size of 512 and an MLP intermediate size of 1024. The model was trained on the roneneldan/TinyStories dataset.
 
-# How to download MongoDB  
-Download Here: https://www.mongodb.com/try/download/community
+## Model Information
 
-Download MongoDB Compass (GUI4MongoDB): https://www.mongodb.com/products/tools/compass
+- **Model Name**: nilq/mistral-1L-tiny
+- **Parameters**: 35.1M
+- **Architecture**: Single-layer Mistral model
+- **Training Dataset**: roneneldan/TinyStories
+- **Purpose**: Analysis of feature dynamics and emergence in real-world language models
 
-# Create a .env file
-OPENAI_API_KEY=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
-ANTHROPIC_API_KEY=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
-MONGODB_URL=<Ur Mongo db connection url>
-LOCAL_WORKING_DIRECTORY = <full path in string format to a empty folder as job folder>
+## Setup Instructions
 
+1. Create a conda environment:
+   ```bash
+   conda create -n mistral-tiny python=3.10 -y
+   conda activate mistral-tiny
+   ```
 
-# Hackthon objective:
-Create Agentic System that can setup any github/hugging face repo to empower researchers, scientists and engineers to automate the project setup process such that they can explore ideas much faster.
+2. Install required packages:
+   ```bash
+   pip install torch transformers datasets safetensors
+   ```
+
+3. Use the model in your Python code:
+   ```python
+   from transformers import AutoModelForCausalLM, AutoTokenizer
+
+   # Load the model and tokenizer
+   model_name = "nilq/mistral-1L-tiny"
+   tokenizer = AutoTokenizer.from_pretrained(model_name)
+   model = AutoModelForCausalLM.from_pretrained(model_name)
+
+   # Test the model with a simple prompt
+   prompt = "Once upon a time, there was a little"
+   inputs = tokenizer(prompt, return_tensors="pt")
+
+   # Generate text
+   outputs = model.generate(
+       inputs["input_ids"],
+       max_length=100,
+       do_sample=True,
+       temperature=0.7,
+       top_p=0.9,
+   )
+
+   # Decode and print the generated text
+   generated_text = tokenizer.decode(outputs[0], skip_special_tokens=True)
+   print(f"Prompt: {prompt}")
+   print(f"Generated text: {generated_text}")
+   ```
+
+## Model Capabilities
+
+This model can generate consistent English text and is particularly useful for:
+- Studying feature dynamics in language models
+- Experimenting with small-scale language models
+- Educational purposes to understand transformer architecture
+
+## Requirements
+
+- Python 3.10 or later
+- PyTorch
+- Transformers library
+- Datasets library
+- Safetensors library
+
+## Notes
+
+The model will be downloaded from the Hugging Face Hub the first time you use it. The download size is approximately 141MB.
