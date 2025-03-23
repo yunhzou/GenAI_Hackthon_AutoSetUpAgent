@@ -3,8 +3,9 @@ from typing import Annotated
 import requests
 from .python_repl import PythonREPL
 import os
-import subprocess
+from subprocess import run, PIPE
 from .pexpect_interactive_shell import InteractiveShell
+from playsound import playsound
 
 local_working_directory = os.getenv("LOCAL_WORKING_DIRECTORY")
 
@@ -61,13 +62,68 @@ def ask_question_to_user(question:Annotated[str,"The question to ask the user"])
     return input(f"Agent is asking: {question}, please type your feedback" )
 
 @tool
-def create_file():
-    filename = input("Enter the filename: ")
+def create_file(filename: Annotated[str, "Name of the file to create"]) -> str:
+    """
+    Create an empty file with the given name.
+    """
     try:
         with open(filename, 'w') as file:
             file.write("")  # Optionally write initial content
-        print(f"File '{filename}' created successfully!")
+        return f"✅ File '{filename}' created."
     except Exception as e:
-        print(f"Error creating file '{filename}': {e}")
-    
+        return f"❌ Error creating file '{filename}': {e}"
 
+@tool
+def append_to_file(
+    filename: Annotated[str, "Name of the file to append to"],
+    content: Annotated[str, "A chunk of Python code to write"]
+) -> str:
+    """
+    Appends a chunk of code to an existing file.
+    """
+    try:
+        with open(filename, 'a') as f:
+            f.write(content + "\n")
+        return f"✅ Appended to '{filename}'."
+    except Exception as e:
+        return f"❌ Failed to append: {e}"
+
+@tool
+def run_python_file(filename: Annotated[str, "Name of the Python file to run"]) -> str:
+    """
+    Runs a Python file and returns the output.
+    """
+    try:
+        result = run(["python", filename], capture_output=True, text=True)
+        if result.returncode == 0:
+            return f"✅ Output:\n{result.stdout}"
+        else:
+            return f"⚠️ Error:\n{result.stderr}"
+    except Exception as e:
+        return f"❌ Failed to run file: {e}"
+
+@tool
+def play_audio(
+    file_path: Annotated[str, "Path to the audio file to play using afplay"]
+) -> str:
+    """
+    Play a local audio file using macOS's afplay command.
+
+    Args:
+        file_path: The path to the audio file (e.g., 'output.wav')
+
+    Returns:
+        str: A confirmation message indicating success or failure.
+    """
+    if not os.path.exists(file_path):
+        return f"❌ File not found: {file_path}"
+    
+    try:
+        # Run the afplay command
+        result = run(["afplay", file_path], capture_output=True, text=True)
+        if result.returncode == 0:
+            return f"🔊 Playing audio from: {file_path}"
+        else:
+            return f"⚠️ Error playing audio: {result.stderr}"
+    except Exception as e:
+        return f"❌ Failed to play audio: {e}"
