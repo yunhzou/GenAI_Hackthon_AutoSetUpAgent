@@ -1,0 +1,28 @@
+{
+    "top_prediction": {
+        "class": "Egyptian cat",
+        "confidence": 0.5645429491996765
+    },
+    "top_5_predictions": [
+        {
+            "class": "Egyptian cat",
+            "confidence": 0.5645429491996765
+        },
+        {
+            "class": "tiger cat",
+            "confidence": 0.07471347600221634
+        },
+        {
+            "class": "tabby, tabby cat",
+            "confidence": 0.07260646671056747
+        },
+        {
+            "class": "plastic bag",
+            "confidence": 0.06971802562475204
+        },
+        {
+            "class": "carton",
+            "confidence": 0.04158581420779228
+        }
+    ]
+}

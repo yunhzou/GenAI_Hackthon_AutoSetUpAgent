@@ -1,0 +1,36 @@
+{
+    "model": "facebook/deit-tiny-distilled-patch16-224",
+    "image": "cat_image.jpg",
+    "top_prediction": {
+        "class_id": 281,
+        "class_name": "tabby, tabby cat",
+        "confidence": 0.16172124445438385
+    },
+    "top_5_predictions": [
+        {
+            "class_id": 281,
+            "class_name": "tabby, tabby cat",
+            "confidence": 0.16172124445438385
+        },
+        {
+            "class_id": 285,
+            "class_name": "Egyptian cat",
+            "confidence": 0.1576860547065735
+        },
+        {
+            "class_id": 852,
+            "class_name": "tennis ball",
+            "confidence": 0.12286201864480972
+        },
+        {
+            "class_id": 837,
+            "class_name": "sunglasses, dark glasses, shades",
+            "confidence": 0.12223126739263535
+        },
+        {
+            "class_id": 722,
+            "class_name": "ping-pong ball",
+            "confidence": 0.10574260354042053
+        }
+    ]
+}

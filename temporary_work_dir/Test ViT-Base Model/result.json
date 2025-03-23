@@ -1,0 +1,30 @@
+{
+    "model": "google/vit-base-patch16-224",
+    "image": "cat_image.jpg",
+    "top_prediction": {
+        "class": "sunglasses, dark glasses, shades",
+        "confidence": 0.690985918045044
+    },
+    "top_5_predictions": [
+        {
+            "class": "sunglasses, dark glasses, shades",
+            "confidence": 0.690985918045044
+        },
+        {
+            "class": "sunglass",
+            "confidence": 0.13962872326374054
+        },
+        {
+            "class": "tiger cat",
+            "confidence": 0.0502774603664875
+        },
+        {
+            "class": "tabby, tabby cat",
+            "confidence": 0.04689495265483856
+        },
+        {
+            "class": "Egyptian cat",
+            "confidence": 0.031588535755872726
+        }
+    ]
+}
